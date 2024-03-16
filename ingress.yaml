@@ -1,0 +1,27 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gotify
+  namespace: gotify
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.gotify.home.techfitsu.org`) # change to your domain
+      kind: Rule
+      services:
+        - name: gotify
+          port: 80
+    - match: Host(`gotify.home.techfitsu.org`) # change to your domain
+      kind: Rule
+      services:
+        - name: gotify
+          port: 80
+      middlewares:
+        - name: default-headers
+  tls:
+    secretName: home-staging # change to your cert
